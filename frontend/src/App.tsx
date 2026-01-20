@@ -3,7 +3,6 @@ import { BrowserRouter } from "react-router-dom";
 import { useState } from "react";
 import fightersData from "./inforoot/fighter.json";
 
-
 export default function App() {
 
   console.log(fightersData);
@@ -21,7 +20,7 @@ export default function App() {
     setGameLoop(false);
     setIsShown(true);
     setSelectedFighter(fighter);
-    compareOptions({a, b});
+    compareOptions({a: aName, b: bName});
   };
 
   console.log("Selected Fighter:", selectedFighter);
@@ -37,7 +36,7 @@ export default function App() {
 }
 
 
-function compareOptions({a, b}: {a: string, b: string}) {
+function compareOptions({a, b}: {a: string, b: string}): void {
   const optionA = fightersData.Fighters.find(f => f.name === a)?.elo;
   const optionB = fightersData.Fighters.find(f => f.name === b)?.elo;
 
@@ -49,16 +48,6 @@ function compareOptions({a, b}: {a: string, b: string}) {
     } else {
       console.log(`${a} and ${b} are equally matched`);
     }
-
-
-    return (
-      <div>
-      </div>
-    );
-
-  }
-
-  function ChangeOption() {
 
   }
 
