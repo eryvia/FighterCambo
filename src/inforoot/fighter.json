@@ -1,0 +1,12 @@
+{
+    "Fighters": [
+        {
+            "name": "Alex",
+            "elo": 123
+        },
+        {
+            "name": "Paxton",
+            "elo": 98
+        }
+    ]
+}
