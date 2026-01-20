@@ -6,14 +6,20 @@ import fightersData from "./inforoot/fighter.json";
 
 export default function App() {
 
-  const a: string = "alex";
-  const b: string = "paxton";
-
+  console.log(fightersData);
+  const [aName, setAName] = useState("alex");
+  const [bName, setBName] = useState("paxton");
+  
   const [selectedFighter, setSelectedFighter] = useState<string | null>(null);
-  const [newSetOfOptions, setNewSetOfOptions] = useState(true);
-  const [isShown, setIsShown] = useState(true);
+  const [gameLoop, setGameLoop] = useState(true);
+  const [isShown, setIsShown] = useState(false);
+
+  const aElo: number = fightersData.Fighters.find(f => f.name === aName)?.elo || 123;
+  const bElo: number = fightersData.Fighters.find(f => f.name === bName)?.elo || 42;
 
   const handleSelect = (fighter: string) => {
+    setGameLoop(false);
+    setIsShown(true);
     setSelectedFighter(fighter);
     compareOptions({a, b});
   };
@@ -23,8 +29,8 @@ export default function App() {
   return (
     <>
       <BrowserRouter>
-        <SelectionBox Fighter="Paxton" option="a" selectedOption={selectedFighter || ""} onSelect={handleSelect}/>
-        <SelectionBox Fighter="Alex" option="b" selectedOption={selectedFighter || ""} onSelect={handleSelect}/>
+        <SelectionBox fighter="Paxton" option="a" elo={aElo} isShown={isShown} selectedOption={selectedFighter || ""} onSelect={handleSelect}/>
+        <SelectionBox fighter="Alex" option="b" elo={bElo} isShown={isShown} selectedOption={selectedFighter || ""} onSelect={handleSelect}/>
       </BrowserRouter>
     </>
   );
@@ -52,7 +58,13 @@ function compareOptions({a, b}: {a: string, b: string}) {
 
   }
 
+  function ChangeOption() {
+
+  }
+
 }
+
+
 
 
 

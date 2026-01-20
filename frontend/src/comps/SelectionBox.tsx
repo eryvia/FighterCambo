@@ -2,21 +2,30 @@ import './SelectionBox.css';
 
 interface SelectionBoxProps {
   option: string;
-  Fighter: string;
+  fighter: string;
+  isShown?: boolean;
+  elo: number;
   selectedOption: string;
   onSelect: (option: string) => void;
 }
 
-export const SelectionBox = ({ option, Fighter, selectedOption, onSelect }: SelectionBoxProps) => {
-  const isSelected = Fighter === selectedOption;
+export const SelectionBox = ({ option, fighter, elo, isShown,selectedOption, onSelect }: SelectionBoxProps) => {
+  const isSelected = fighter === selectedOption;
 
   return (
     <div
       className={`selection-box ${isSelected ? "selected" : ""}`}
-      onClick={() => onSelect(Fighter)}
+      onClick={() => onSelect(fighter)}
     >
-      <p>{Fighter}</p>
+      <p>{fighter}</p>
       <p>{option}</p>
+
+      {isShown && (
+        <div className="elo-display">
+          <p>ELO: {elo}</p>
+        </div>
+      )}
+      
     </div>
   );
 };
