@@ -1,0 +1,60 @@
+import { Router } from "express";
+import { z } from "zod";
+import { fighters, getFighter } from "../data/fighters";
+import { updateElo } from "../math/evoCalculation";
+import { MatchResponse } from "../types/match";
+
+const router = Router();
+
+const MatchSchema = z.object({
+  aId: z.string(),
+  bId: z.string(),
+  winnerId: z.string(),
+});
+
+router.get("/fighters", (_req, res) => {
+  res.json({ fighters });
+});
+
+router.post("/match", (req, res) => {
+  const parsed = MatchSchema.safeParse(req.body);
+  
+  if (!parsed.success) {
+    return res.status(400).json({ error: "Invalid body", details: parsed.error.flatten() });
+  }
+
+  const { aId, bId, winnerId } = parsed.data;
+
+  if (aId === bId) return res.status(400).json({ error: "aId and bId must differ" });
+  if (winnerId !== aId && winnerId !== bId) return res.status(400).json({ error: "winnerId must be aId or bId" });
+
+  const a = getFighter(aId);
+  const b = getFighter(bId);
+  if (!a || !b) return res.status(404).json({ error: "Fighter not found" });
+
+  const winner = winnerId === aId ? a : b;
+  const loser = winnerId === aId ? b : a;
+
+  const { newWinner, newLoser, delta } = updateElo({
+    ratingWinner: winner.elo,
+    ratingLoser: loser.elo,
+    k: 32,
+  });
+
+  // update in-memory state
+  winner.elo = newWinner;
+  loser.elo = newLoser;
+
+  const response: MatchResponse = {
+    a,
+    b,
+    winnerId: winner.id,
+    loserId: loser.id,
+    delta,
+    message: "win",
+  };
+
+  res.json(response);
+});
+
+export default router;

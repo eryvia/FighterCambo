@@ -2,6 +2,7 @@ export type Fighter = {
   id: string;
   name: string;
   elo: number;
+  gamePlayed: number;
 };
 
 export type MatchRequest = {

@@ -13,6 +13,8 @@ export default function App() {
   const [gameLoop, setGameLoop] = useState(true);
   const [isShown, setIsShown] = useState(false);
 
+ 
+
   const aElo: number = fightersData.Fighters.find(f => f.name === aName)?.elo || 123;
   const bElo: number = fightersData.Fighters.find(f => f.name === bName)?.elo || 42;
 
