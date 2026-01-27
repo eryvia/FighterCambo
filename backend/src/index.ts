@@ -5,6 +5,7 @@ import matchRoutes from "./routes/matchRoutes";
 const app = express();
 
 app.use(cors({ origin: "http://localhost:5173" })); // change if different port
+
 app.use(express.json());
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
