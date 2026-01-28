@@ -6,7 +6,6 @@ import FighterList from "./comps/FigtherList";
 
 export default function App() {
 
-  console.log(fightersData);
   const [aName, setAName] = useState("alex");
   const [bName, setBName] = useState("paxton");
   
@@ -19,10 +18,9 @@ export default function App() {
   const bElo: number = fightersData.Fighters.find(f => f.name === bName)?.elo || 42;
 
   const handleSelect = (fighter: string) => {
-    setGameLoop(false);
+    setGameLoop(false); //GameLoop 
     setIsShown(true);
     setSelectedFighter(fighter);
-    compareOptions({a: aName, b: bName});
   };
 
   console.log("Selected Fighter:", selectedFighter);
@@ -33,28 +31,11 @@ export default function App() {
         <SelectionBox fighter="Paxton" option="a" elo={aElo} isShown={isShown} selectedOption={selectedFighter || ""} onSelect={handleSelect}/>
         <SelectionBox fighter="Alex" option="b" elo={bElo} isShown={isShown} selectedOption={selectedFighter || ""} onSelect={handleSelect}/>
       </BrowserRouter>
-      <FighterList />
+      <FighterList /> 
     </>
   );
 }
 
-
-function compareOptions({a, b}: {a: string, b: string}): void {
-  const optionA = fightersData.Fighters.find(f => f.name === a)?.elo;
-  const optionB = fightersData.Fighters.find(f => f.name === b)?.elo;
-
-  if (optionA && optionB) {
-    if (optionA > optionB) {
-      console.log(`${a} is better than ${b}`);
-    } else if (optionA < optionB) {
-      console.log(`${b} is better than ${a}`);
-    } else {
-      console.log(`${a} and ${b} are equally matched`);
-    }
-
-  }
-
-}
 
 
 

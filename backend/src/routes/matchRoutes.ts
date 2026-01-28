@@ -12,13 +12,28 @@ const MatchSchema = z.object({
   winnerId: z.string(),
 });
 
+//Get all fighters
 router.get("/fighters", (_req, res) => {
   res.json({ fighters });
 });
 
+//Get current id from fighter list
+router.get("/fighter/:id", (req, res) => {
+
+  const { id } = req.params;
+
+  const fighter = getFighter(id);
+  if (!fighter) {
+    return res.status(404).json({ error: "Fighter not found" });
+  }
+  res.json(fighter);
+});
+
+router.post("/fighter", (req, res) => {
+
 router.post("/match", (req, res) => {
   const parsed = MatchSchema.safeParse(req.body);
-  
+
   if (!parsed.success) {
     return res.status(400).json({ error: "Invalid body", details: parsed.error.flatten() });
   }
@@ -41,7 +56,6 @@ router.post("/match", (req, res) => {
     k: 32,
   });
 
-  // update in-memory state
   winner.elo = newWinner;
   loser.elo = newLoser;
 
