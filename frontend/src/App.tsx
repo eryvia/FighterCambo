@@ -3,6 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import { useState } from "react";
 import fightersData from "./inforoot/fighter.json";
 import FighterList from "./comps/FigtherList";
+import { fetchMatch } from "./api/fetchMatch";
 
 export default function App() {
 
@@ -13,14 +14,20 @@ export default function App() {
   const [gameLoop, setGameLoop] = useState(true);
   const [isShown, setIsShown] = useState(false);
 
-
   const aElo: number = fightersData.Fighters.find(f => f.name === aName)?.elo || 123;
   const bElo: number = fightersData.Fighters.find(f => f.name === bName)?.elo || 42;
+
 
   const handleSelect = (fighter: string) => {
     setGameLoop(false); //GameLoop 
     setIsShown(true);
     setSelectedFighter(fighter);
+
+    //Fetch match after selection
+    fetchMatch().then((matchData) => {
+      console.log("Match Data:", matchData);
+    });
+
   };
 
   console.log("Selected Fighter:", selectedFighter);

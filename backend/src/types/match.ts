@@ -17,5 +17,5 @@ export type MatchResponse = {
   winnerId: string;
   loserId: string;
   delta: number;
-  message: "win" | "loss"; // from A perspective if you want, or generic
+  message: "win" | "loss"; 
 };

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { fighters, getFighter } from "../data/fighters";
 import { updateElo } from "../math/evoCalculation";
 import { MatchResponse } from "../types/match";
+import choosingFighter from "../math/choosingFighter";  
 
 const router = Router();
 
@@ -12,12 +13,13 @@ const MatchSchema = z.object({
   winnerId: z.string(),
 });
 
-//Get all fighters
+//Get ALL fighters
 router.get("/fighters", (_req, res) => {
   res.json({ fighters });
 });
 
 //Get current id from fighter list
+/*
 router.get("/fighter/:id", (req, res) => {
 
   const { id } = req.params;
@@ -28,8 +30,17 @@ router.get("/fighter/:id", (req, res) => {
   }
   res.json(fighter);
 });
+*/
 
-router.post("/fighter", (req, res) => {
+//Fetching just both fighters
+router.post("/fetchFighters", (_req, res) => {
+
+  const { result1, result2 } = choosingFighter(fighters);
+  console.log(`Random Elements = ${result1}, ${result2}`);
+
+  res.json({ result1, result2 });
+
+});
 
 router.post("/match", (req, res) => {
   const parsed = MatchSchema.safeParse(req.body);
@@ -72,3 +83,7 @@ router.post("/match", (req, res) => {
 });
 
 export default router;
+
+
+
+
