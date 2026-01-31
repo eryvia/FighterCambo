@@ -1,5 +1,7 @@
 import { Fighter } from "../types/match";
 
+
+//Just a promo for SATABASE
 export const fighters: Fighter[] = [
   { id: "alex", name: "Alex", elo: 123, gamePlayed: 10 },
   { id: "paxton", name: "Paxton", elo: 42, gamePlayed: 5 },

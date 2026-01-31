@@ -1,6 +1,6 @@
 import type { Fighter, FightersResponse } from "../types/Fighter";
 
-export async function fetchFightersID(): Promise<Fighter[]> {
+export async function fetchFighters(): Promise<Fighter[]> {
   const res = await fetch("http://localhost:3001/api/fetchFighters");
 
   if (!res.ok) {
