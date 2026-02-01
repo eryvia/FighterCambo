@@ -18,6 +18,16 @@ router.get("/fighters", (_req, res) => {
   res.json({ fighters });
 });
 
+router.post("/fetchFighters", (_req, res) => {
+
+  const { result1, result2 } = choosingFighter(fighters);
+  console.log(`Random Elements = ${result1}, ${result2}`);
+
+
+  res.json({ result1, result2 });
+
+});
+
 //Get current id from fighter list
 /*
 router.get("/fighter/:id", (req, res) => {
@@ -33,14 +43,7 @@ router.get("/fighter/:id", (req, res) => {
 */
 
 //Fetching just both fighters
-router.post("/fetchFighters", (_req, res) => {
 
-  const { result1, result2 } = choosingFighter(fighters);
-  console.log(`Random Elements = ${result1}, ${result2}`);
-
-  res.json({ result1, result2 });
-
-});
 
 router.post("/match", (req, res) => {
   const parsed = MatchSchema.safeParse(req.body);

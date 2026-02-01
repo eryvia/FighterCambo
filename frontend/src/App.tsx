@@ -1,6 +1,6 @@
 import { SelectionBox } from "./comps/SelectionBox";
 import { BrowserRouter } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FighterList from "./comps/FigtherList";
 import { fetchMatch } from "./api/fetchMatch";
 import { fetchFighters } from "./api/fetchFighters";
@@ -10,6 +10,8 @@ export default function App() {
   const [aName, setAName] = useState("alex");
   const [bName, setBName] = useState("paxton");
 
+  console.log(aName, bName);
+
   const [aElo, setAElo] = useState(123);
   const [bElo, setBElo] = useState(42);
 
@@ -17,16 +19,23 @@ export default function App() {
   const [gameLoop, setGameLoop] = useState(true);
   const [isShown, setIsShown] = useState(false);
 
-  fetchFighters().then((fighters) => {
-    console.log("Fighters Data:", fighters);
+    useEffect(() => {
+    let alive = true;
 
-    setAName(fighters[0].name);
-    setBName(fighters[1].name);
-    
-    setAElo(fighters[0].elo);
-    setBElo(fighters[1].elo);
-    
-  });
+    fetchFighters()
+      .then((fighters) => {
+        if (!alive) return;
+        setAName(fighters[0].name);
+        setBName(fighters[1].name);
+        setAElo(fighters[0].elo);
+        setBElo(fighters[1].elo);
+      })
+      .catch(console.error);
+
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const handleSelect = (fighter: string) => {
     setGameLoop(false); //GameLoop 
