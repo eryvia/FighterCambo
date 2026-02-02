@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import type { Fighter } from "../types/Fighter";
-import { fetchFighters } from "../api/fighters";
+import { fetchAllFighters } from "../api/fetchAllFighters";
 
 export default function FighterList() {
   const [fighters, setFighters] = useState<Fighter[]>([]);
   const [loading, setLoading] = useState(true);
 
+  
   useEffect(() => {
-    fetchFighters()
+    fetchAllFighters()
       .then(setFighters)
       .catch(console.error)
       .finally(() => setLoading(false));

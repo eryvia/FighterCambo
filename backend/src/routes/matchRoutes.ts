@@ -18,7 +18,7 @@ router.get("/fighters", (_req, res) => {
   res.json({ fighters });
 });
 
-router.post("/fetchFighters", (_req, res) => {
+router.get("/fetchFighters", (_req, res) => {
 
   const { result1, result2 } = choosingFighter(fighters);
   console.log(`Random Elements = ${result1}, ${result2}`);

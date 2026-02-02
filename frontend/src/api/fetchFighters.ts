@@ -1,4 +1,9 @@
-import type { Fighter, FightersResponse } from "../types/Fighter";
+import type { Fighter } from "../types/Fighter";
+
+type FetchFightersResponse = {
+  result1: Fighter;
+  result2: Fighter;
+};
 
 export async function fetchFighters(): Promise<Fighter[]> {
   const res = await fetch("/api/fetchFighters");
@@ -7,7 +12,8 @@ export async function fetchFighters(): Promise<Fighter[]> {
     throw new Error("Failed to fetch fighters");
   }
 
-  const data: FightersResponse = await res.json();
+  const data: FetchFightersResponse = await res.json();
 
-  return data.fighters;
+  return [data.result1, data.result2];
 }
+
