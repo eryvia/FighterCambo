@@ -1,21 +1,31 @@
-import './SelectionBox.css';
+// SelectionBox.tsx
+import "./SelectionBox.css";
+
+export type Option = "a" | "b";
 
 interface SelectionBoxProps {
-  option: string;
+  option: Option;
   fighter: string;
-  isShown?: boolean;
   elo: number;
-  selectedOption: string;
-  onSelect: (option: string) => void;
+  isShown?: boolean;
+  selectedOption: Option | null;
+  onSelect: (option: Option) => void;
 }
 
-export const SelectionBox = ({ option, fighter, elo, isShown,selectedOption, onSelect }: SelectionBoxProps) => {
-  const isSelected = fighter === selectedOption;
+export const SelectionBox = ({
+  option,
+  fighter,
+  elo,
+  isShown,
+  selectedOption,
+  onSelect,
+}: SelectionBoxProps) => {
+  const isSelected = option === selectedOption;
 
   return (
     <div
       className={`selection-box ${isSelected ? "selected" : ""}`}
-      onClick={() => onSelect(fighter)}
+      onClick={() => onSelect(option)}
     >
       <p>{fighter}</p>
       <p>{option}</p>
@@ -25,7 +35,6 @@ export const SelectionBox = ({ option, fighter, elo, isShown,selectedOption, onS
           <p>ELO: {elo}</p>
         </div>
       )}
-      
     </div>
   );
 };

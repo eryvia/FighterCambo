@@ -4,46 +4,63 @@ import { useState, useEffect } from "react";
 import FighterList from "./comps/FigtherList";
 import { fetchMatch } from "./api/fetchMatch";
 import { fetchFighters } from "./api/fetchFighters";
+import type { Fighter } from "./types/Fighter";
+import type { Option } from "./comps/SelectionBox";
 
 export default function App() {
 
-  const [aName, setAName] = useState<string | null>(null);
-  const [bName, setBName] = useState<string | null>(null);
+  //stored my fighters
+  const [fighterA, setFighterA] = useState<Fighter | null>(null);
+  const [fighterB, setFighterB] = useState<Fighter | null>(null);
 
-  const [aElo, setAElo] = useState(123);
-  const [bElo, setBElo] = useState(42);
-
-  const [selectedFighter, setSelectedFighter] = useState<string | null>(null);
-  const [initPhase, setInitPhase] = useState(true);
-  const [gameLoop, setGameLoop] = useState(true);
+  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const [isShown, setIsShown] = useState(false);
 
-  if (initPhase) { 
-    fetch2Fighters(setAName, setBName, setAElo, setBElo);
-    setInitPhase(false);
-  }
+  useEffect(() => {
+    fetch2Fighters(setFighterA, setFighterB);
+  }, []);
 
+  const handleSelect = async (picked: Option) => {
+    if (!fighterA || !fighterB) return;
 
-  const handleSelect = (fighter: string) => {
-    setGameLoop(false); 
     setIsShown(true);
-    setSelectedFighter(fighter);
+    setSelectedOption(picked);
 
-    
-    fetchMatch().then((matchData) => {
-      console.log("Match Data:", matchData);
+    const result = await fetchMatch({
+      aId: fighterA.id,
+      bId: fighterB.id,
+      picked,
     });
 
+    setFighterA(result.nextA);
+    setFighterB(result.nextB);
+
+    setSelectedOption(null);
+    setIsShown(false);
   };
-
-
-  console.log("Selected Fighter:", selectedFighter);
 
   return (
     <>
       <BrowserRouter>
-        <SelectionBox fighter={aName || "Unknown"} option="a" elo={aElo} isShown={isShown} selectedOption={selectedFighter || ""} onSelect={handleSelect}/>
-        <SelectionBox fighter={bName || "Unknown"} option="b" elo={bElo} isShown={isShown} selectedOption={selectedFighter || ""} onSelect={handleSelect}/>
+
+       <SelectionBox
+        fighter={fighterA?.name ?? "Unknown"}
+        option="a"
+        elo={fighterA?.elo ?? 0}
+        isShown={isShown}
+        selectedOption={selectedOption}
+        onSelect={handleSelect}
+      />
+
+      <SelectionBox
+        fighter={fighterB?.name ?? "Unknown"}
+        option="b"
+        elo={fighterB?.elo ?? 0}
+        isShown={isShown}
+        selectedOption={selectedOption}
+        onSelect={handleSelect}
+      />
+
       </BrowserRouter>
       <FighterList /> 
     </>
@@ -51,15 +68,13 @@ export default function App() {
 }
 
 
-function fetch2Fighters(setAName: (name: string) => void, setBName: (name: string) => void, setAElo: (elo: number) => void, setBElo: (elo: number) => void) {
+function fetch2Fighters(setFighterA: (name: Fighter) => void, setFighterB: (name: Fighter) => void) {
    fetchFighters()
     .then((fighters) => {
       console.log("Fetched Fighters:", fighters);
 
-      setAName(fighters[0].name);
-      setBName(fighters[1].name);
-      setAElo(fighters[0].elo);
-      setBElo(fighters[1].elo);
+      setFighterA(fighters[0]);
+      setFighterB(fighters[1]);
 
     })
     .catch(console.error);

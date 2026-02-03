@@ -10,7 +10,7 @@ const router = Router();
 const MatchSchema = z.object({
   aId: z.string(),
   bId: z.string(),
-  winnerId: z.string(),
+  picked: z.enum(["a", "b"]),
 });
 
 //Get ALL fighters
@@ -49,20 +49,24 @@ router.post("/match", (req, res) => {
   const parsed = MatchSchema.safeParse(req.body);
 
   if (!parsed.success) {
-    return res.status(400).json({ error: "Invalid body", details: parsed.error.flatten() });
+    return res.status(400).json({
+      error: "Invalid body",
+      details: parsed.error.flatten(),
+    });
   }
 
-  const { aId, bId, winnerId } = parsed.data;
+  const { aId, bId, picked } = parsed.data;
 
-  if (aId === bId) return res.status(400).json({ error: "aId and bId must differ" });
-  if (winnerId !== aId && winnerId !== bId) return res.status(400).json({ error: "winnerId must be aId or bId" });
+  if (aId === bId) {
+    return res.status(400).json({ error: "aId and bId must differ" });
+  }
 
   const a = getFighter(aId);
   const b = getFighter(bId);
   if (!a || !b) return res.status(404).json({ error: "Fighter not found" });
 
-  const winner = winnerId === aId ? a : b;
-  const loser = winnerId === aId ? b : a;
+  const winner = picked === "a" ? a : b;
+  const loser = picked === "a" ? b : a;
 
   const { newWinner, newLoser, delta } = updateElo({
     ratingWinner: winner.elo,
@@ -73,16 +77,22 @@ router.post("/match", (req, res) => {
   winner.elo = newWinner;
   loser.elo = newLoser;
 
-  const response: MatchResponse = {
-    a,
-    b,
-    winnerId: winner.id,
-    loserId: loser.id,
-    delta,
-    message: "win",
-  };
+  const nextA = b;
+  const { result1: candidate1, result2: candidate2 } = choosingFighter(fighters);
 
-  res.json(response);
+  let nextB = candidate1.id !== nextA.id ? candidate1 : candidate2;
+
+  if (nextB.id === nextA.id) {
+    nextB = fighters.find((f) => f.id !== nextA.id) ?? nextA;
+  }
+
+  return res.json({
+    matchId: `${aId}_${bId}_${Date.now()}`,
+    winnerId: winner.id,
+    delta,
+    nextA,
+    nextB,
+  });
 });
 
 export default router;

@@ -8,14 +8,17 @@ export type Fighter = {
 export type MatchRequest = {
   aId: string;
   bId: string;
-  winnerId: string;
+  picked: "a" | "b";
 };
 
 export type MatchResponse = {
-  a: Fighter;
-  b: Fighter;
+  matchId: string;
   winnerId: string;
   loserId: string;
   delta: number;
+
+  nextA: Fighter;
+  nextB: Fighter; 
+
   message: "win" | "loss"; 
 };

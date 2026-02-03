@@ -1,6 +1,8 @@
-export type Match = {
-  matchId: string;
-  aId: string;
-  bId: string;
+import type { Fighter } from "./Fighter";
+
+export type MatchResult = {
+  nextA: Fighter;
+  nextB: Fighter;
   winnerId: string;
+  delta: Record<string, number>; 
 };
